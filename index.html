@@ -1,46 +1,175 @@
 <!doctype html>
 <html lang="he" dir="rtl">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>מלצר תלת־ממדי | משחק המסעדה</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#173a4b">
+<title>מלצר המסעדה — משחק תלת־ממדי</title>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,Arial;background:#15253a;color:#172033}#game{position:fixed;inset:0}canvas{display:block;width:100%;height:100%}.overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:14px;background:#14243acc;z-index:4}.card{width:min(560px,100%);max-height:95dvh;overflow:auto;background:#fffaf0;border-radius:24px;padding:22px;box-shadow:0 18px 55px #0005}h1{font-size:clamp(26px,6vw,38px);margin:0 0 5px}.muted{color:#627083;margin-top:0}.group{margin-top:16px;font-weight:850}.choices{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}.choice,.pill{border:2px solid #e0e5eb;background:white;border-radius:14px;padding:10px 6px;font-weight:800;color:#172033}.choice span{display:block;font-size:27px}.selected{border-color:#ff8b3d!important;background:#fff0e2!important}.pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.pill{border-radius:99px;padding:9px 13px}.primary{margin-top:20px;width:100%;border:0;border-radius:15px;padding:15px;font-size:18px;font-weight:900;background:#ff923f;box-shadow:0 5px #c56726}.small{font-size:13px;color:#6b7584;line-height:1.5}#hud{display:none;position:fixed;z-index:2;top:10px;left:10px;right:10px;justify-content:space-between;gap:8px;pointer-events:none} .hudbox{background:#fffaf0ed;border-radius:14px;padding:10px 12px;font-weight:850;box-shadow:0 5px 16px #0002;font-size:14px}#mission{max-width:72%}#toast{display:none;position:fixed;z-index:3;top:74px;left:50%;transform:translateX(-50%);background:#172033ee;color:white;border-radius:99px;padding:10px 14px;font-weight:800;max-width:92%;text-align:center}#controls{display:none;position:fixed;z-index:3;bottom:14px;left:14px;right:14px;align-items:end;justify-content:space-between;pointer-events:none}.pad{display:grid;grid-template-columns:repeat(3,52px);grid-template-rows:repeat(2,52px);gap:5px;direction:ltr;pointer-events:auto}.ctrl{border:0;border-radius:14px;background:#fffaf0e8;font-size:22px;font-weight:900;box-shadow:0 4px #bdb6a9;touch-action:none}.ctrl:active{transform:translateY(2px)}#up{grid-column:2}#left{grid-column:1;grid-row:2}#down{grid-column:2;grid-row:2}#right{grid-column:3;grid-row:2}#act{pointer-events:auto;width:84px;height:84px;border:0;border-radius:50%;background:#ff923f;font-weight:900;box-shadow:0 5px #c56726;touch-action:manipulation}#menu{display:none;position:fixed;z-index:3;right:10px;top:67px;border:0;border-radius:12px;padding:8px 12px;font-weight:800;background:#fffaf0}#finish{display:none}.finish{text-align:center}.finish .primary{margin-bottom:8px}
-</style></head>
-<body><div id="game"></div>
-<div class="overlay" id="setup"><div class="card"><div style="font-size:42px">🍽️</div><h1>מלצר תלת־ממדי</h1><p class="muted">בחרו את המסעדה שלכם וצאו להגיש אוכל ללקוחות!</p>
-<div class="group">1. סוג המסעדה</div><div class="choices" id="themes"><button class="choice selected" data-theme="burger"><span>🍔</span>המבורגרים</button><button class="choice" data-theme="pizza"><span>🍕</span>פיצרייה</button><button class="choice" data-theme="sushi"><span>🍣</span>סושי</button></div>
-<div class="group">2. הדמות שלכם</div><div class="pills" id="avatars"><button class="pill selected" data-avatar="blue">🧑‍🍳 כחול</button><button class="pill" data-avatar="pink">👩‍🍳 ורוד</button><button class="pill" data-avatar="green">🧑‍🍳 ירוק</button></div>
-<div class="group">3. רמת הקושי</div><div class="pills" id="diffs"><button class="pill selected" data-diff="easy">😊 קל</button><button class="pill" data-diff="normal">🙂 רגיל</button><button class="pill" data-diff="hard">🔥 מאתגר</button></div>
-<button class="primary" id="start">מתחילים לשחק ▶</button><p class="small">בטלפון: החיצים וכפתור הפעולה. במחשב: WASD או חיצים, ו־E או רווח כדי לקחת ולהגיש. המשחק חינמי ופועל בדפדפן.</p></div></div>
-<div id="hud"><div class="hudbox" id="mission">גש למטבח</div><div class="hudbox" id="score">⭐ 0</div></div><div id="toast"></div><button id="menu">↻ תפריט</button>
-<div id="controls"><div class="pad"><button class="ctrl" id="up">▲</button><button class="ctrl" id="left">◀</button><button class="ctrl" id="down">▼</button><button class="ctrl" id="right">▶</button></div><button id="act">🍽️<br>לקחת / להגיש</button></div>
-<div class="overlay" id="finish"><div class="card finish"><div style="font-size:54px">🏆</div><h1>כל הכבוד!</h1><p id="finishText">השלמת את המשמרת!</p><button class="primary" id="again">לשחק שוב</button></div></div>
-<script type="module">
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
-const $=id=>document.getElementById(id);const root=$('game');
-let theme='burger',avatar='blue',difficulty='easy',scene,camera,renderer,player,clock,active=false,holding=false,score=0,served=0,customers=[],blocked=[],keys={},pressed=new Set(),toastTimer;
-const food={burger:'🍔 המבורגר',pizza:'🍕 פיצה',sushi:'🍣 סושי'},targets={easy:5,normal:8,hard:12},avatarColors={blue:0x3787e8,pink:0xef70a8,green:0x39a878};
-function material(c){return new THREE.MeshStandardMaterial({color:c,roughness:.78})}
-function box(w,h,d,c,x,y,z){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material(c));m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;scene.add(m);return m}
-function cyl(rt,rb,h,c,x,y,z,n=18){const m=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,n),material(c));m.position.set(x,y,z);m.castShadow=true;scene.add(m);return m}
-function ball(r,c,x,y,z){const m=new THREE.Mesh(new THREE.SphereGeometry(r,16,12),material(c));m.position.set(x,y,z);m.castShadow=true;scene.add(m);return m}
-function tag(text,x,y,z,bg='#fff8ec',fg='#172033'){const cv=document.createElement('canvas');cv.width=512;cv.height=128;const g=cv.getContext('2d');g.fillStyle=bg;g.beginPath();g.roundRect(4,4,504,120,24);g.fill();g.fillStyle=fg;g.font='bold 43px Arial';g.textAlign='center';g.textBaseline='middle';g.fillText(text,256,65,480);const tex=new THREE.CanvasTexture(cv);tex.colorSpace=THREE.SRGBColorSpace;const m=new THREE.Mesh(new THREE.PlaneGeometry(2.65,.66),new THREE.MeshBasicMaterial({map:tex,transparent:true,side:THREE.DoubleSide}));m.position.set(x,y,z);m.rotation.x=-.15;scene.add(m);return m}
-function makeWorld(){if(renderer){renderer.dispose();root.innerHTML=''}customers=[];blocked=[];scene=new THREE.Scene();scene.background=new THREE.Color(0xb9dce7);scene.fog=new THREE.Fog(0xb9dce7,22,40);camera=new THREE.PerspectiveCamera(52,innerWidth/innerHeight,.1,100);renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.outputColorSpace=THREE.SRGBColorSpace;root.appendChild(renderer.domElement);scene.add(new THREE.HemisphereLight(0xffffff,0x7b887a,2));const sun=new THREE.DirectionalLight(0xffffff,2.2);sun.position.set(-5,12,7);sun.castShadow=true;scene.add(sun);
-box(22,.3,22,0xdac9a8,0,-.3,0);for(let i=-10;i<=10;i+=2){box(.025,.01,20,0xc9b58f,i,-.13,0);box(20,.01,.025,0xc9b58f,0,-.12,i)}box(22,3,.3,0xf0e4d1,0,1.3,-10.8);box(.3,3,22,0xe6d6bf,-10.8,1.3,0);box(.3,3,22,0xe6d6bf,10.8,1.3,0);box(22,3,.3,0xf0e4d1,0,1.3,10.8);box(21.5,.22,.35,0x98583b,0,2.65,-10.55);
-tag(theme==='burger'?'מסעדת המבורגרים':theme==='pizza'?'פיצרייה':'מסעדת סושי',0,2.15,-10.45,'#8b4229','#ffffff');
-for(const x of [-7,-3.5,3.5,7]){box(1.5,1.2,.1,0x82c8df,x,1.6,-10.55);box(1.6,.08,.15,0xffffff,x,1.6,-10.43);box(.08,1.3,.15,0xffffff,x,1.6,-10.43)}
-box(5.8,1,1.6,0x86543a,-6.8,.5,-7.8);box(5.9,.15,1.7,0xf5efdf,-6.8,1.05,-7.8);tag('🍳 מטבח',-6.8,1.9,-7.6);for(const x of [-8.5,-6.8,-5.1]){cyl(.4,.4,.12,0x41474d,x,1.15,-7.8,22);cyl(.25,.25,.04,0xe8a54b,x,1.23,-7.8,22)}
-const spots=[[-5,-2.7],[-1,-3.2],[3.2,-3],[6.2,-1],[-5.2,3.5],[-.7,3.6],[4,4.2]],shirts=[0x5577be,0xd45e4f,0x56a87d,0x9b68bd,0xd49a39,0x4f9eaf,0xc86d92];
-spots.forEach(([x,z],i)=>{cyl(.15,.22,.9,0x75472e,x,.45,z);cyl(.9,.9,.16,0x9a603c,x,.98,z,28);cyl(.75,.75,.035,0xf7ecd9,x,1.08,z,28);cyl(.2,.2,.03,0xffffff,x-.22,1.12,z-.1);cyl(.07,.07,.2,0x8bc9df,x+.4,1.2,z+.1);box(.7,.15,.65,0x4c6877,x,.35,z+1.15);box(.7,.75,.14,0x4c6877,x,.72,z+1.48);cyl(.34,.4,.7,shirts[i],x,.8,z+.72);ball(.28,0xf0c6a2,x,1.39,z+.72);ball(.29,0x49362c,x,1.51,z+.72);ball(.045,0x242424,x-.1,1.4,z+.47);ball(.045,0x242424,x+.1,1.4,z+.47);const order=tag(food[theme],x,2.45,z+.5,'#fff5e5','#382b23');customers.push({x,z,order,waiting:true});blocked.push({x,z,r:1.05})});
-for(const [x,z] of [[-9,-5],[9,-5],[-9,8],[9,8]]){cyl(.35,.4,.5,0xb65f43,x,.25,z);cyl(.05,.05,.75,0x478951,x,.8,z,10);for(let i=0;i<5;i++)ball(.16,0x4a9b60,x+Math.cos(i*1.25)*.22,1+Math.sin(i)*.1,z+Math.sin(i*1.25)*.22)}
-player=new THREE.Group();scene.add(player);const body=new THREE.Mesh(new THREE.CylinderGeometry(.31,.38,.86,18),material(avatarColors[avatar]));body.position.y=.78;player.add(body);const head=new THREE.Mesh(new THREE.SphereGeometry(.26,16,12),material(0xf0c6a2));head.position.y=1.4;player.add(head);const hair=new THREE.Mesh(new THREE.SphereGeometry(.27,16,12,0,Math.PI*2,0,Math.PI*.5),material(0x443229));hair.position.y=1.5;player.add(hair);const hat=new THREE.Mesh(new THREE.CylinderGeometry(.24,.27,.15,18),material(0xffffff));hat.position.y=1.7;player.add(hat);const tray=new THREE.Mesh(new THREE.CylinderGeometry(.42,.42,.06,24),material(0xd8d6cf));tray.position.set(.45,1.12,0);tray.visible=false;player.add(tray);const meal=new THREE.Mesh(new THREE.SphereGeometry(.18,16,12),material(theme==='burger'?0xb87939:theme==='pizza'?0xe2a33a:0xf2f0e5));meal.position.set(.45,1.25,0);meal.visible=false;player.add(meal);player.userData.tray=tray;player.userData.meal=meal;player.position.set(-6.8,0,-4.7);cyl(.85,.85,.05,0x49a87a,-6.8,.02,-5.3,24);tag('קחו אוכל כאן',-6.8,1.9,-5.3,'#e4fff1','#15543c');blocked.push({x:-6.8,z:-7.8,r:2.05});for(let i=-10;i<=10;i+=2){blocked.push({x:i,z:-10.8,r:.5},{x:i,z:10.8,r:.5},{x:-10.8,z:i,r:.5},{x:10.8,z:i,r:.5})}camera.position.set(0,8,4);clock=new THREE.Clock()}
-function toast(t){$('toast').textContent=t;$('toast').style.display='block';clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').style.display='none',2300)}
-function hud(){ $('mission').textContent=holding?'🥡 יש אוכל! גש לשולחן של לקוח והגש':'🍳 גש לדלפק המטבח וקח '+food[theme];$('score').textContent='⭐ '+score+' נקודות · '+served+'/'+targets[difficulty]}
-function interact(){if(!active)return;const x=player.position.x,z=player.position.z;if(!holding&&Math.hypot(x+6.8,z+7.8)<3){holding=true;player.userData.tray.visible=player.userData.meal.visible=true;toast('לקחת '+food[theme]+'! עכשיו גש ללקוח.');hud();return}if(holding){let c=null,d0=999;for(const v of customers){const d=Math.hypot(x-v.x,z-v.z);if(v.waiting&&d<2.15&&d<d0){c=v;d0=d}}if(c){holding=false;player.userData.tray.visible=player.userData.meal.visible=false;c.waiting=false;c.order.visible=false;score+=difficulty==='hard'?20:difficulty==='normal'?15:10;served++;hud();toast('הגשה מוצלחת! קיבלת נקודות ⭐');if(served>=targets[difficulty]){active=false;$('finishText').textContent='הגשת '+served+' מנות וצברת '+score+' נקודות!';$('finish').style.display='flex'}else setTimeout(()=>{if(scene&&active){c.waiting=true;c.order.visible=true}},1800);return}toast('התקרב לשולחן של לקוח ולחץ שוב.');return}toast('התקרב לדלפק המטבח כדי לקחת אוכל.')}
-function bind(id,k){const el=$(id);const down=e=>{e.preventDefault();pressed.add(k);try{el.setPointerCapture(e.pointerId)}catch{}};const up=e=>{e.preventDefault();pressed.delete(k)};el.addEventListener('pointerdown',down);el.addEventListener('pointerup',up);el.addEventListener('pointercancel',up);el.addEventListener('lostpointercapture',up)}
-bind('up','ArrowUp');bind('down','ArrowDown');bind('left','ArrowLeft');bind('right','ArrowRight');$('act').addEventListener('pointerdown',e=>{e.preventDefault();interact()});addEventListener('keydown',e=>{const k=e.key.toLowerCase();if(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d',' '].includes(k))e.preventDefault();keys[k]=true;if(['e',' ','enter'].includes(k)&&!e.repeat)interact()});addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
-function frame(){requestAnimationFrame(frame);if(!renderer||!scene)return;const dt=Math.min(clock.getDelta(),.05);if(active){let dx=0,dz=0;if(keys.arrowup||keys.w||pressed.has('ArrowUp'))dz--;if(keys.arrowdown||keys.s||pressed.has('ArrowDown'))dz++;if(keys.arrowleft||keys.a||pressed.has('ArrowLeft'))dx--;if(keys.arrowright||keys.d||pressed.has('ArrowRight'))dx++;if(dx||dz){const l=Math.hypot(dx,dz);dx/=l;dz/=l;const speed=difficulty==='hard'?3.5:difficulty==='normal'?4:4.6,nx=THREE.MathUtils.clamp(player.position.x+dx*speed*dt,-9.7,9.7),nz=THREE.MathUtils.clamp(player.position.z+dz*speed*dt,-9.7,9.7);const hit=blocked.some(o=>Math.hypot(nx-o.x,nz-o.z)<o.r);if(!hit){player.position.x=nx;player.position.z=nz;player.rotation.y=Math.atan2(dx,dz)}else{if(!blocked.some(o=>Math.hypot(nx-o.x,player.position.z-o.z)<o.r))player.position.x=nx;if(!blocked.some(o=>Math.hypot(player.position.x-o.x,nz-o.z)<o.r))player.position.z=nz}}const target=new THREE.Vector3(player.position.x+6,7.5,player.position.z+7);camera.position.lerp(target,1-Math.exp(-dt*2.6));camera.lookAt(player.position.x,.4,player.position.z)}renderer.render(scene,camera)}
-document.querySelectorAll('[data-theme]').forEach(b=>b.onclick=()=>{theme=b.dataset.theme;document.querySelectorAll('[data-theme]').forEach(x=>x.classList.toggle('selected',x===b))});document.querySelectorAll('[data-avatar]').forEach(b=>b.onclick=()=>{avatar=b.dataset.avatar;document.querySelectorAll('[data-avatar]').forEach(x=>x.classList.toggle('selected',x===b))});document.querySelectorAll('[data-diff]').forEach(b=>b.onclick=()=>{difficulty=b.dataset.diff;document.querySelectorAll('[data-diff]').forEach(x=>x.classList.toggle('selected',x===b))});
-function start(){ $('setup').style.display='none';$('finish').style.display='none';score=0;served=0;holding=false;keys={};pressed.clear();makeWorld();active=true;$('hud').style.display='flex';$('controls').style.display='flex';$('menu').style.display='block';hud();toast('התחל במטבח, קח אוכל והגש ללקוחות!')}
-$('start').onclick=start;$('again').onclick=()=>{active=false;$('finish').style.display='none';$('setup').style.display='flex';$('hud').style.display='none';$('controls').style.display='none';$('menu').style.display='none'};$('menu').onclick=()=>{active=false;$('setup').style.display='flex';$('hud').style.display='none';$('controls').style.display='none';$('menu').style.display='none'};addEventListener('resize',()=>{if(renderer&&camera){camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)}});frame();
-</script></body></html>
+:root{--cream:#fff8e8;--ink:#173044;--orange:#ff963f;--mint:#b9e8c9}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:system-ui,Arial,sans-serif;background:#a8d9d5;color:var(--ink);touch-action:manipulation}button{font:inherit;cursor:pointer;touch-action:manipulation}#game{position:fixed;inset:0}canvas{display:block;width:100%;height:100%}
+#hud{position:fixed;z-index:4;top:max(9px,env(safe-area-inset-top));left:9px;right:9px;display:none;align-items:flex-start;justify-content:space-between;gap:7px;pointer-events:none}.hudgroup{display:flex;gap:6px;flex-wrap:wrap}.stat{background:#fff8e9ed;border:1px solid #fff;border-radius:13px;padding:8px 10px;box-shadow:0 4px 12px #2344;font-size:13px;font-weight:900;white-space:nowrap}.stat b{color:#d96b22}
+#mission{position:fixed;z-index:4;top:76px;left:50%;transform:translateX(-50%);background:#173044eF;color:white;border-radius:99px;padding:9px 15px;font-weight:800;font-size:13px;text-align:center;max-width:92vw;box-shadow:0 4px 12px #17304444;display:none}
+#toast{position:fixed;z-index:8;top:125px;left:50%;transform:translateX(-50%);background:#fff8e8;color:#173044;padding:10px 16px;border-radius:14px;font-weight:900;box-shadow:0 8px 25px #17304433;display:none;white-space:nowrap;max-width:90vw}
+#labels{position:fixed;inset:0;z-index:3;pointer-events:none;display:none}.customer-label{position:absolute;transform:translate(-50%,-100%);background:#fff8e8;border:2px solid white;border-radius:12px;padding:5px 8px;font-size:12px;font-weight:900;white-space:nowrap;box-shadow:0 3px 10px #1233}.customer-label small{display:block;text-align:center;color:#d86d26;font-size:10px}
+#controls{position:fixed;z-index:5;bottom:max(12px,env(safe-area-inset-bottom));left:12px;right:12px;display:none;align-items:end;justify-content:space-between;pointer-events:none}.dpad{display:grid;grid-template-columns:repeat(3,48px);grid-template-rows:repeat(2,45px);gap:5px;pointer-events:auto}.move{border:1px solid #fff9;border-radius:14px;background:#fff0d9eF;color:#173044;font-weight:1000;font-size:22px;box-shadow:0 4px 0 #c8b79d}.move:active,.action:active{transform:translateY(2px);box-shadow:0 2px 0 #c8b79d}.up{grid-column:2;grid-row:1}.left{grid-column:1;grid-row:2}.down{grid-column:2;grid-row:2}.right{grid-column:3;grid-row:2}.action{pointer-events:auto;border:0;border-radius:18px;background:#ff963f;color:#40210d;font-size:15px;font-weight:1000;padding:16px 18px;min-width:120px;box-shadow:0 5px 0 #c96b25;max-width:46vw}.action:disabled{opacity:.65}
+.overlay{position:fixed;z-index:10;inset:0;display:flex;align-items:center;justify-content:center;padding:14px;background:linear-gradient(#17304466,#173044aa)}.card{width:min(570px,100%);max-height:94dvh;overflow:auto;background:var(--cream);border:3px solid white;border-radius:26px;padding:22px;box-shadow:0 20px 70px #0b273c66}.brand{display:inline-block;background:#c9f0d2;border-radius:99px;padding:5px 11px;font-size:12px;font-weight:1000;margin-bottom:10px}h1{font-size:clamp(27px,6vw,39px);line-height:1.12;margin:0 0 8px}.muted{color:#627687;margin:0;line-height:1.6}.group{margin-top:15px;font-weight:900}.choices{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}.choice{border:2px solid #e2e8e9;background:white;border-radius:15px;padding:10px 5px;font-weight:850;color:var(--ink)}.choice span{display:block;font-size:25px;margin-bottom:3px}.selected{border-color:var(--orange)!important;background:#fff0df!important}.pills{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}.pill{border:2px solid #e2e8e9;background:white;border-radius:99px;padding:8px 12px;font-weight:850;color:var(--ink)}.primary{margin-top:19px;width:100%;border:0;border-radius:16px;padding:15px;font-size:18px;font-weight:1000;color:#40210d;background:var(--orange);box-shadow:0 5px 0 #c96b25}.secondary{border:2px solid #d9e0e0;background:white;border-radius:13px;padding:9px 12px;font-weight:850}.hint{font-size:12px;color:#6b7c86;line-height:1.6;margin-top:12px}.resultbig{font-size:44px;font-weight:1000;margin:8px 0}.resultrow{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:12px 0}.resultchip{background:white;border-radius:13px;padding:10px 13px;font-weight:900}
+@media(min-width:760px){#controls{left:24px;right:24px;bottom:20px}.dpad{grid-template-columns:repeat(3,54px);grid-template-rows:repeat(2,49px)}.action{font-size:17px;padding:18px 25px}.stat{font-size:15px;padding:10px 13px}}
+</style>
+</head>
+<body>
+<div id="game"></div>
+<div id="hud">
+ <div class="hudgroup"><div class="stat">⭐ ניקוד <b id="score">0</b></div><div class="stat">🪙 מטבעות <b id="coins">0</b></div></div>
+ <div class="hudgroup"><div class="stat">🎯 שלב <b id="level">1</b></div><div class="stat">⏱️ <b id="time">90</b></div><div class="stat">🍽️ <b id="served">0/4</b></div></div>
+</div>
+<div id="mission">גש למטבח, אסוף אוכל והגש לשולחנות!</div><div id="toast"></div><div id="labels"></div>
+<div id="controls">
+ <div class="dpad">
+  <button class="move up" data-dir="up" aria-label="קדימה">▲</button><button class="move left" data-dir="left" aria-label="שמאלה">◀</button><button class="move down" data-dir="down" aria-label="אחורה">▼</button><button class="move right" data-dir="right" aria-label="ימינה">▶</button>
+ </div>
+ <button class="action" id="actionBtn">🍽️ אסוף אוכל</button>
+</div>
+<div class="overlay" id="startScreen">
+ <div class="card">
+  <div class="brand">🎮 משחק תלת־ממדי</div>
+  <h1>המלצר הכי מהיר בעיר!</h1>
+  <p class="muted">המסעדה מלאה באורחים רעבים. אסוף מנות מהמטבח, מצא את השולחן הנכון והגש בזמן. כל לקוח מרוצה שווה נקודות ומטבעות!</p>
+  <div class="group">🍔 בחר את התפריט</div>
+  <div class="choices" id="foodChoices">
+   <button class="choice selected" data-food="mixed"><span>🍔🍕🍣</span>הכול מהכול</button><button class="choice" data-food="pizza"><span>🍕</span>פיצרייה</button><button class="choice" data-food="burger"><span>🍔</span>המבורגרים</button>
+  </div>
+  <div class="group">🎨 צבע המדים</div><div class="pills" id="colorChoices"><button class="pill selected" data-color="#ff923f">כתום</button><button class="pill" data-color="#4e9dff">כחול</button><button class="pill" data-color="#64c58a">ירוק</button><button class="pill" data-color="#d77cff">סגול</button></div>
+  <div class="group">⚡ רמת קושי</div><div class="pills" id="difficultyChoices"><button class="pill" data-difficulty="easy">קל</button><button class="pill selected" data-difficulty="normal">רגיל</button><button class="pill" data-difficulty="hard">קשה</button></div>
+  <button class="primary" id="startBtn">▶ מתחילים לשחק!</button>
+  <div class="hint">📱 בטלפון: השתמש בכפתורי החצים ובכפתור הפעולה. 💻 במחשב: WASD או החצים, ו־E / רווח כדי לאסוף ולהגיש. נדרש חיבור לאינטרנט לטעינת מנוע התלת־ממד.</div>
+ </div>
+</div>
+<div class="overlay" id="resultScreen" style="display:none">
+ <div class="card" style="text-align:center"><div class="brand" id="resultBadge">🏆 כל הכבוד!</div><h1 id="resultTitle">המסעדה מרוצה!</h1><div class="resultbig" id="resultScore">0 ⭐</div><div class="resultrow"><div class="resultchip">🪙 <span id="resultCoins">0</span> מטבעות</div><div class="resultchip">🍽️ <span id="resultServed">0</span> מנות</div></div><p class="muted" id="resultText">מוכנים לסיבוב הבא?</p><button class="primary" id="nextBtn">🔄 משחק נוסף</button><button class="secondary" id="menuBtn" style="margin-top:10px">חזרה לתפריט</button></div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const game=$('game'), hud=$('hud'), controls=$('controls'), labels=$('labels'), mission=$('mission'), toast=$('toast');
+if(!window.THREE){$('startScreen').innerHTML='<div class="card"><h1>לא הצלחנו לטעון את המשחק</h1><p class="muted">בדוק חיבור לאינטרנט ונסה לרענן את הדף.</p><button class="primary" onclick="location.reload()">נסה שוב</button></div>';return;}
+let scene,camera,renderer,clock,player,playerBody,tray,foodMesh,foodIcon,foodMode='empty',customers=[],obstacles=[],keys={},running=false,score=0,coins=0,served=0,level=1,timeLeft=90,goal=4,selectedFood='mixed',uniformColor='#ff923f',difficulty='normal',toastTimer=0,frameId=0,roundEnded=false;
+const foodTypes={burger:{name:'המבורגר',emoji:'🍔',color:0xd98a42},pizza:{name:'פיצה',emoji:'🍕',color:0xe6a54b},sushi:{name:'סושי',emoji:'🍣',color:0xf2f0e6},salad:{name:'סלט',emoji:'🥗',color:0x64ba72},drink:{name:'שתייה',emoji:'🥤',color:0x65c9ed}};
+function mat(color,roughness=.85){return new THREE.MeshStandardMaterial({color:color,roughness:roughness});}
+function box(w,h,d,color,x,y,z,opts={}){const mesh=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat(color));mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;if(opts.round){mesh.geometry=new THREE.BoxGeometry(w,h,d);}scene.add(mesh);return mesh;}
+function cylinder(rt,rb,h,color,x,y,z,segments=10){const m=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,segments),mat(color));m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;scene.add(m);return m;}
+function sphere(r,color,x,y,z,segments=12){const m=new THREE.Mesh(new THREE.SphereGeometry(r,segments,Math.max(6,segments-2)),mat(color));m.position.set(x,y,z);m.castShadow=true;scene.add(m);return m;}
+function group(){const g=new THREE.Group();scene.add(g);return g;}
+function buildScene(){
+ scene=new THREE.Scene();scene.background=new THREE.Color(0xa6d9d1);scene.fog=new THREE.Fog(0xa6d9d1,19,38);
+ camera=new THREE.PerspectiveCamera(47,innerWidth/innerHeight,.1,100);camera.position.set(0,10,12);
+ renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.7));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;game.innerHTML='';game.appendChild(renderer.domElement);
+ scene.add(new THREE.HemisphereLight(0xffffff,0x73917b,2.0));const sun=new THREE.DirectionalLight(0xfff0d5,2.6);sun.position.set(-6,12,8);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);scene.add(sun);
+ // outdoor café floor and garden border
+ box(20,.25,18,0xd5bd91,0,-.16,0);for(let x=-9;x<=9;x+=1.25)for(let z=-8;z<=8;z+=1.25){const tile=box(1.18,.025,1.18,((Math.round(x+z)%2)===0)?0xe8d5ad:0xdac49a,x,-.015,z);tile.castShadow=false;}
+ box(20,.55,.65,0x8bba80,0,-.1,-8.8);box(20,.55,.65,0x8bba80,0,-.1,8.8);box(.65,.55,18,0x8bba80,-9.8,-.1,0);box(.65,.55,18,0x8bba80,9.8,-.1,0);
+ // back kitchen counter
+ box(5,.8,1.3,0x8c5636,0,.45,-6.6);box(5.2,.15,1.45,0xf7ead2,0,.92,-6.6);box(5.5,2.2,.3,0xfff0d6,0,1.8,-7.55);box(2.3,.8,.12,0x4d8e83,0,1.85,-7.34);box(2.0,.1,.14,0xf3b45b,0,2.15,-7.25);
+ // kitchen food sign
+ addTextBoard('🍳  המטבח',0,3.15,-7.35,0x173044);
+ // trees, shrubs and lights
+ for(const p of [[-8,-7],[8,-7],[-8,7],[8,7],[-8,0],[8,0]]){cylinder(.22,.3,1.1,0x9b6845,p[0],.45,p[1]);sphere(.8,0x62ad70,p[0],1.35,p[1],9);sphere(.55,0x85c77b,p[0]+.35,1.65,p[1]+.1,8);}
+ for(let x=-6;x<=6;x+=2){cylinder(.035,.035,3,0x8b6547,x,2,-4.7);sphere(.12,0xffdf80,x,3.45,-4.7,8);}
+ // café awning
+ box(7,.18,2.1,0xfff1d7,0,3.25,-4.3);for(let x=-3;x<=3;x+=1.5)box(.45,.2,2.12,0xe97555,x,3.25,-4.3);
+ // tables & chairs / customer seating
+ const spots=[[-5,-2.5],[-1.8,-1.7],[2,-1.7],[5,-2.5],[-5,2.3],[-1.7,3.2],[2,3.2],[5,2.3]];
+ customers=[];obstacles=[];
+ spots.forEach((p,i)=>{const x=p[0],z=p[1];cylinder(.95,.95,.18,0x9b633d,x,.92,z,12);cylinder(.15,.2,.8,0x795036,x,.48,z,8);cylinder(.48,.48,.1,0xc78a53,x,.12,z,10);obstacles.push({x,z,r:.8});
+ // chairs on customer-facing side
+ const cx=x,cz=z+.95;box(.72,.12,.7,0x477c75,cx,.52,cz);box(.72,.72,.12,0x477c75,cx,.9,cz+.28);cylinder(.06,.06,.5,0x77543d,cx-.26,.28,cz-.2);cylinder(.06,.06,.5,0x77543d,cx+.26,.28,cz-.2);
+ const person=group();person.position.set(x,.0,z-.95);const skin=[0xf0c39d,0xb97b54,0x8d5c43,0xe4b18b][i%4],shirt=[0x568cce,0xd77b8d,0x6aaf83,0xe3b04d][i%4];sphere(.32,skin,0,1.45,0,12).parent=person; // adjust absolute-created objects below via grouping replacement
+ scene.remove(person);const body=new THREE.Group();body.position.set(x,0,z-.95);scene.add(body);
+ const torso=new THREE.Mesh(new THREE.CylinderGeometry(.27,.34,.7,8),mat(shirt));torso.position.y=.91;torso.castShadow=true;body.add(torso);
+ const head=new THREE.Mesh(new THREE.SphereGeometry(.29,12,10),mat(skin));head.position.y=1.48;head.castShadow=true;body.add(head);
+ const hair=new THREE.Mesh(new THREE.SphereGeometry(.3,10,8,0,Math.PI*2,0,Math.PI*.55),mat([0x49352e,0x282a30,0x8a5a2c][i%3]));hair.position.y=1.59;body.add(hair);
+ const eyeMat=mat(0x27313a);sphereOn(body,.035,eyeMat,-.1,1.5,.25);sphereOn(body,.035,eyeMat,.1,1.5,.25);
+ const label=document.createElement('div');label.className='customer-label';label.innerHTML='רעב!<small>מחכה להזמנה</small>';labels.appendChild(label);
+ customers.push({x,z:z-.95,body,label,tableX:x,tableZ:z,order:null,done:false,patience:100,phase:i*.8,skin,shirt});
+ });
+ // decorative planters and outdoor sign
+ for(const p of [[-7,-3],[7,-3],[-7,3],[7,3]]){cylinder(.35,.42,.55,0xc77d53,p[0],.25,p[1]);sphere(.38,0x64a76c,p[0],.75,p[1],8);}
+ box(3,.15,.15,0x6d4731,0,2.2,7.7);box(2.7,.75,.12,0xffe4ad,0,2.55,7.7);addTextBoard('☀  קפה גן',0,2.55,7.6,0x713e2c);
+ // player starts near front-center
+ player=new THREE.Group();scene.add(player);player.position.set(0,0,5.5);
+ const torso=new THREE.Mesh(new THREE.CylinderGeometry(.32,.4,.82,8),mat(uniformColor));torso.position.y=1.0;torso.castShadow=true;player.add(torso);playerBody=torso;
+ const head=new THREE.Mesh(new THREE.SphereGeometry(.3,12,10),mat(0xf0c29d));head.position.y=1.62;head.castShadow=true;player.add(head);
+ const hair=new THREE.Mesh(new THREE.SphereGeometry(.31,10,8,0,Math.PI*2,0,Math.PI*.55),mat(0x46352d));hair.position.y=1.73;player.add(hair);
+ const hat=new THREE.Mesh(new THREE.CylinderGeometry(.34,.34,.12,12),mat(0xffffff));hat.position.y=1.94;player.add(hat);const hatTop=new THREE.Mesh(new THREE.SphereGeometry(.27,12,8,0,Math.PI*2,0,Math.PI*.5),mat(0xffffff));hatTop.position.y=1.99;player.add(hatTop);
+ for(const x of [-.39,.39]){const arm=new THREE.Mesh(new THREE.CapsuleGeometry(.1,.42,3,6),mat(uniformColor));arm.position.set(x,1.02,0);arm.rotation.z=x<0?-.2:.2;player.add(arm);}
+ for(const x of [-.18,.18]){const leg=new THREE.Mesh(new THREE.BoxGeometry(.16,.5,.18),mat(0x394b60));leg.position.set(x,.3,0);player.add(leg);}
+ tray=new THREE.Group();tray.position.set(.45,1.28,.18);player.add(tray);const plate=new THREE.Mesh(new THREE.CylinderGeometry(.33,.33,.055,18),mat(0xfff7e9));tray.add(plate);
+ const trayEdge=new THREE.Mesh(new THREE.TorusGeometry(.3,.025,6,18),mat(0xb9b5aa));trayEdge.rotation.x=Math.PI/2;trayEdge.position.y=.04;tray.add(trayEdge);
+ // kitchen interaction area
+ const marker=new THREE.Mesh(new THREE.CylinderGeometry(1.15,1.15,.035,24),new THREE.MeshStandardMaterial({color:0xffd36a,transparent:true,opacity:.6}));marker.position.set(0,.03,-5.4);scene.add(marker);marker.userData.pulse=true;
+ obstacles.push({x:0,z:-6.7,r:1.05});
+ clock=new THREE.Clock();
+}
+function sphereOn(parent,r,material,x,y,z){const m=new THREE.Mesh(new THREE.SphereGeometry(r,8,6),material);m.position.set(x,y,z);parent.add(m);return m;}
+function addTextBoard(text,x,y,z,color){const canvas=document.createElement('canvas');canvas.width=512;canvas.height=128;const c=canvas.getContext('2d');c.fillStyle='#fff4dc';c.fillRect(0,0,512,128);c.fillStyle='#'+color.toString(16).padStart(6,'0');c.font='bold 48px Arial';c.textAlign='center';c.textBaseline='middle';c.fillText(text,256,65);const tex=new THREE.CanvasTexture(canvas);const mesh=new THREE.Mesh(new THREE.PlaneGeometry(3.3,.82),new THREE.MeshBasicMaterial({map:tex,side:THREE.DoubleSide}));mesh.position.set(x,y,z);scene.add(mesh);}
+function makeFood(type){if(foodMesh){tray.remove(foodMesh);foodMesh=null;}if(!type)return;const spec=foodTypes[type],g=new THREE.Group();const plate=new THREE.Mesh(new THREE.CylinderGeometry(.22,.22,.035,16),mat(0xffffff));plate.position.y=.08;g.add(plate);
+ if(type==='burger'){cylinderOn(g,.13,.13,.06,0xd7a05a, .16);cylinderOn(g,.12,.12,.07,0x754126,.23);cylinderOn(g,.14,.14,.06,0x62a84d,.28);cylinderOn(g,.13,.13,.07,0xe8b866,.34);sphereOn(g,.025,mat(0xfff2d1),-.04,.39,.04);}
+ else if(type==='pizza'){const pizza=new THREE.Mesh(new THREE.CylinderGeometry(.16,.16,.045,12),mat(0xe8b45e));pizza.position.y=.16;g.add(pizza);for(let i=0;i<5;i++){const a=i*1.256; sphereOn(g,.025,mat(0xc64f3e),Math.cos(a)*.09,.19,Math.sin(a)*.09);}}
+ else if(type==='sushi'){for(let i=0;i<3;i++){const s=new THREE.Mesh(new THREE.BoxGeometry(.09,.09,.1),mat(0xf8f3e5));s.position.set((i-1)*.1,.15,0);g.add(s);sphereOn(g,.035,mat(0xe87964),(i-1)*.1,.21,0);}}
+ else if(type==='salad'){sphereOn(g,.13,mat(0x69b66c),0,.17,0);sphereOn(g,.06,mat(0xffce57),.06,.21,.03);sphereOn(g,.04,mat(0xd65f48),-.05,.22,-.03);}
+ else {cylinderOn(g,.09,.11,.22,0x70c7e8,.18);cylinderOn(g,.09,.09,.025,0xffffff,.3);const straw=new THREE.Mesh(new THREE.BoxGeometry(.025,.14,.025),mat(0xf17859));straw.position.set(.04,.35,0);straw.rotation.z=-.2;g.add(straw);}
+ tray.add(g);foodMesh=g;
+}
+function cylinderOn(parent,rt,rb,h,color,y){const m=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,10),mat(color));m.position.y=y;parent.add(m);return m;}
+function chooseOrder(){let choices=selectedFood==='pizza'?['pizza','drink','salad']:selectedFood==='burger'?['burger','drink','salad']:['burger','pizza','sushi','salad','drink'];return choices[Math.floor(Math.random()*choices.length)];}
+function resetRound(){
+ score=0;coins=0;served=0;timeLeft=difficulty==='easy'?120:difficulty==='hard'?65:90;goal=Math.min(4+level,8);roundEnded=false;foodMode='empty';makeFood(null);player.position.set(0,0,5.5);
+ customers.forEach((c,i)=>{c.done=false;c.order=chooseOrder();c.patience=100;c.phase=i*.8;c.body.visible=i<goal;c.label.style.display=i<goal?'block':'none';});
+ updateHud();setAction();toastMsg('התחל! אסוף מנה מהמטבח 🍽️');
+}
+function updateHud(){$('score').textContent=score;$('coins').textContent=coins;$('level').textContent=level;$('time').textContent=Math.max(0,Math.ceil(timeLeft));$('served').textContent=served+'/'+goal;}
+function toastMsg(msg){toast.textContent=msg;toast.style.display='block';clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.style.display='none',1800);}
+function nearestCustomer(){let best=null,dist=Infinity;for(const c of customers){if(c.done||!c.order||!c.body.visible)continue;const d=Math.hypot(player.position.x-c.x,player.position.z-c.z);if(d<dist){best=c;dist=d;}}return dist<1.65?best:null;}
+function nearKitchen(){return Math.hypot(player.position.x,player.position.z+5.45)<1.7;}
+function setAction(){const b=$('actionBtn');if(foodMode==='empty'){b.textContent='🍽️ אסוף אוכל';b.disabled=false;}else{b.textContent='🧑‍🍳 הגש מנה';b.disabled=false;}}
+function interact(){
+ if(!running||roundEnded)return;
+ if(foodMode==='empty'){
+  if(!nearKitchen()){toastMsg('גש לדלפק המטבח כדי לאסוף מנה 🍳');return;}
+  const pending=customers.filter(c=>!c.done&&c.order&&c.body.visible);
+  if(!pending.length){toastMsg('אין כרגע הזמנות!');return;}
+  // choose the customer who has waited longest, then cook their exact order
+  pending.sort((a,b)=>a.patience-b.patience);const c=pending[0];foodMode='carrying';makeFood(c.order);tray.visible=true;toastMsg('אספת '+foodTypes[c.order].emoji+' '+foodTypes[c.order].name+' — מצא את הלקוח!');setAction();
+ }else{
+  const c=nearestCustomer();if(!c){toastMsg('התקרב לשולחן שמעליו מופיעה ההזמנה');return;}
+  c.done=true;c.label.style.display='none';foodMode='empty';makeFood(null);score+=100+Math.ceil(c.patience);coins+=10;served++;updateHud();toastMsg('בבקשה! '+foodTypes[c.order].emoji+' הוגש! הלקוח: תודה! ❤️');setAction();
+  if(served>=goal){roundEnded=true;running=false;level++;$('resultBadge').textContent='🏆 שלב הושלם!';$('resultTitle').textContent='המסעדה כולה מרוצה!';$('resultScore').textContent=score+' ⭐';$('resultCoins').textContent=coins;$('resultServed').textContent=served;$('resultText').textContent='כל הכבוד! עלית לשלב '+level+'. בשלב הבא יהיו יותר לקוחות.';$('resultScreen').style.display='flex';}
+ }
+}
+function moveVector(){let x=0,z=0;if(keys.ArrowLeft||keys.a||keys.A)x-=1;if(keys.ArrowRight||keys.d||keys.D)x+=1;if(keys.ArrowUp||keys.w||keys.W)z-=1;if(keys.ArrowDown||keys.s||keys.S)z+=1;const len=Math.hypot(x,z);if(len>0){x/=len;z/=len;}return{x,z};}
+function canMove(nx,nz){if(nx<-8.5||nx>8.5||nz<-7.7||nz>7.7)return false;for(const o of obstacles){if(Math.hypot(nx-o.x,nz-o.z)<o.r)return false;}for(const c of customers){if(c.body.visible&&!c.done&&Math.hypot(nx-c.x,nz-c.z)<.55)return false;}return true;}
+function updateLabels(){const v=new THREE.Vector3();customers.forEach(c=>{if(c.done||!c.body.visible){c.label.style.display='none';return;}v.set(c.x,2.55,c.z).project(camera);if(v.z>1){c.label.style.display='none';return;}c.label.style.display='block';c.label.style.left=((v.x*.5+.5)*innerWidth)+'px';c.label.style.top=((-v.y*.5+.5)*innerHeight)+'px';c.label.innerHTML=foodTypes[c.order].emoji+' '+foodTypes[c.order].name+'<small>'+(c.patience<30?'ממהר!':'ההזמנה שלי')+'</small>';});}
+function animate(){
+ frameId=requestAnimationFrame(animate);if(!renderer||!scene)return;const dt=Math.min(clock.getDelta(),.05);
+ if(running&&!roundEnded){timeLeft-=dt;if(timeLeft<=0){timeLeft=0;roundEnded=true;running=false;$('resultBadge').textContent='⏱️ הזמן נגמר';$('resultTitle').textContent='נגמר הזמן!';$('resultScore').textContent=score+' ⭐';$('resultCoins').textContent=coins;$('resultServed').textContent=served;$('resultText').textContent='הגשת '+served+' מתוך '+goal+' מנות. נסה שוב ושבור את השיא!';$('resultScreen').style.display='flex';}
+ const m=moveVector();const speed=(difficulty==='easy'?3.8:difficulty==='hard'?4.6:4.1)*dt;let nx=player.position.x+m.x*speed,nz=player.position.z+m.z*speed;if(canMove(nx,player.position.z))player.position.x=nx;if(canMove(player.position.x,nz))player.position.z=nz;if(m.x||m.z){player.rotation.y=Math.atan2(m.x,m.z);playerBody.position.y=1+Math.sin(performance.now()*.012)*.025;}
+ customers.forEach(c=>{if(!c.done&&c.body.visible){c.patience=Math.max(0,c.patience-dt*(difficulty==='hard'?1.25:difficulty==='easy'?.55:.8));c.body.position.y=Math.sin(performance.now()*.002+c.phase)*.025;if(c.patience===0){c.done=true;c.label.style.display='none';toastMsg('אוי! לקוח עזב כי חיכה יותר מדי 😟');}}});updateHud();if(served+customers.filter(c=>c.done&&c.patience===0).length>=goal&&served<goal){roundEnded=true;running=false;$('resultBadge').textContent='🧾 סוף המשמרת';$('resultTitle').textContent='המשמרת הסתיימה';$('resultScore').textContent=score+' ⭐';$('resultCoins').textContent=coins;$('resultServed').textContent=served;$('resultText').textContent='במשמרת הבאה נסה להגיש מהר יותר!';$('resultScreen').style.display='flex';}
+ }
+ const target=new THREE.Vector3(player.position.x*.28,0,player.position.z*.18);camera.position.lerp(new THREE.Vector3(player.position.x*.55,10.5,player.position.z+11.5),.045);camera.lookAt(target.x,0,target.z);
+ updateLabels();renderer.render(scene,camera);
+}
+function startGame(){if(!scene)buildScene();if(playerBody)playerBody.material.color.set(uniformColor);$('startScreen').style.display='none';$('resultScreen').style.display='none';hud.style.display='flex';controls.style.display='flex';labels.style.display='block';mission.style.display='block';running=true;resetRound();if(!frameId)animate();}
+document.querySelectorAll('[data-food]').forEach(b=>b.addEventListener('click',()=>{selectedFood=b.dataset.food;document.querySelectorAll('[data-food]').forEach(x=>x.classList.toggle('selected',x===b));}));
+document.querySelectorAll('[data-color]').forEach(b=>b.addEventListener('click',()=>{uniformColor=b.dataset.color;document.querySelectorAll('[data-color]').forEach(x=>x.classList.toggle('selected',x===b));if(playerBody)playerBody.material.color.set(uniformColor);}));
+document.querySelectorAll('[data-difficulty]').forEach(b=>b.addEventListener('click',()=>{difficulty=b.dataset.difficulty;document.querySelectorAll('[data-difficulty]').forEach(x=>x.classList.toggle('selected',x===b));}));
+$('startBtn').addEventListener('click',startGame);$('actionBtn').addEventListener('click',interact);$('nextBtn').addEventListener('click',startGame);$('menuBtn').addEventListener('click',()=>{$('resultScreen').style.display='none';$('startScreen').style.display='flex';hud.style.display='none';controls.style.display='none';labels.style.display='none';mission.style.display='none';running=false;});
+document.querySelectorAll('[data-dir]').forEach(b=>{const map={up:'ArrowUp',down:'ArrowDown',left:'ArrowLeft',right:'ArrowRight'};const k=map[b.dataset.dir];const down=e=>{e.preventDefault();keys[k]=true;};const up=e=>{e.preventDefault();keys[k]=false;};b.addEventListener('pointerdown',down);b.addEventListener('pointerup',up);b.addEventListener('pointercancel',up);b.addEventListener('pointerleave',up);});
+window.addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();keys[e.key]=true;if(e.key==='e'||e.key==='E'||e.key===' ')interact();});
+window.addEventListener('keyup',e=>{keys[e.key]=false;});window.addEventListener('blur',()=>{keys={};});
+window.addEventListener('resize',()=>{if(camera&&renderer){camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);}});
+})();
+</script>
+</body>
+</html>
