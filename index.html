@@ -85,8 +85,7 @@ function buildScene(){
  spots.forEach((p,i)=>{const x=p[0],z=p[1];cylinder(.95,.95,.18,0x9b633d,x,.92,z,12);cylinder(.15,.2,.8,0x795036,x,.48,z,8);cylinder(.48,.48,.1,0xc78a53,x,.12,z,10);obstacles.push({x,z,r:.8});
  // chairs on customer-facing side
  const cx=x,cz=z+.95;box(.72,.12,.7,0x477c75,cx,.52,cz);box(.72,.72,.12,0x477c75,cx,.9,cz+.28);cylinder(.06,.06,.5,0x77543d,cx-.26,.28,cz-.2);cylinder(.06,.06,.5,0x77543d,cx+.26,.28,cz-.2);
- const person=group();person.position.set(x,.0,z-.95);const skin=[0xf0c39d,0xb97b54,0x8d5c43,0xe4b18b][i%4],shirt=[0x568cce,0xd77b8d,0x6aaf83,0xe3b04d][i%4];sphere(.32,skin,0,1.45,0,12).parent=person; // adjust absolute-created objects below via grouping replacement
- scene.remove(person);const body=new THREE.Group();body.position.set(x,0,z-.95);scene.add(body);
+ const skin=[0xf0c39d,0xb97b54,0x8d5c43,0xe4b18b][i%4],shirt=[0x568cce,0xd77b8d,0x6aaf83,0xe3b04d][i%4];const body=new THREE.Group();body.position.set(x,0,z-.95);scene.add(body);
  const torso=new THREE.Mesh(new THREE.CylinderGeometry(.27,.34,.7,8),mat(shirt));torso.position.y=.91;torso.castShadow=true;body.add(torso);
  const head=new THREE.Mesh(new THREE.SphereGeometry(.29,12,10),mat(skin));head.position.y=1.48;head.castShadow=true;body.add(head);
  const hair=new THREE.Mesh(new THREE.SphereGeometry(.3,10,8,0,Math.PI*2,0,Math.PI*.55),mat([0x49352e,0x282a30,0x8a5a2c][i%3]));hair.position.y=1.59;body.add(hair);
